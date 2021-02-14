@@ -50,6 +50,7 @@ bme280 = BME280(i2c_dev=bus)
 pms5003 = PMS5003()
 
 TEMPERATURE = Gauge('temperature','Temperature measured (*C)')
+TEMPERATUREF = Gauge('temperatureF','Temperature measured (*F)')    # convert to Fahrenheit
 PRESSURE = Gauge('pressure','Pressure measured (hPa)')
 HUMIDITY = Gauge('humidity','Relative humidity measured (%)')
 OXIDISING = Gauge('oxidising','Mostly nitrogen dioxide but could include NO and Hydrogen (Ohms)')
@@ -109,8 +110,10 @@ def get_temperature(factor):
         cpu_temps = cpu_temps[1:] + [cpu_temp]
         avg_cpu_temp = sum(cpu_temps) / float(len(cpu_temps))
         temperature = raw_temp - ((avg_cpu_temp - raw_temp) / factor)
+        temperatureF = temperature * (9/5) + 32    # convert to Fahrenheit
     else:
         temperature = raw_temp
+        temperatureF = raw_temp * (9/5) + 32    # convert to Fahrenheit
 
     TEMPERATURE.set(temperature)   # Set to a given value
 
